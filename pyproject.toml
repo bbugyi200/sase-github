@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sase-github"
+version = "0.1.0"
+description = "GitHub VCS plugin for sase"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = ["sase>=0.1.0"]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "mypy",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+]
+
+[project.entry-points."sase_vcs"]
+github = "sase_github.plugin:GitHubPlugin"
+
+[project.entry-points."sase_xprompts"]
+sase_github = "sase_github"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sase_github"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "B", "C4", "UP"]
+ignore = ["E501", "W291", "F401", "F821", "B007"]
+
+[tool.mypy]
+files = ["src"]
+mypy_path = ["src"]
+python_version = "3.12"
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = ["sase.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+addopts = [
+    "--import-mode=importlib",
+    "--strict-markers",
+    "--strict-config",
+    "-v",
+]
