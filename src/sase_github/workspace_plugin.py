@@ -9,7 +9,7 @@ import os
 import subprocess
 from pathlib import Path
 
-from sase.workspace_provider import ResolvedRef, hookimpl
+from sase.workspace_provider import ResolvedRef, WorkflowMetadata, hookimpl
 from sase.workspace_utils import (
     get_default_branch,
     parse_workspace_dir,
@@ -21,6 +21,15 @@ class GitHubWorkspacePlugin:
     """Workspace provider plugin for GitHub-hosted projects."""
 
     # ── Hook implementations ────────────────────────────────────────
+
+    @hookimpl
+    def ws_get_workflow_metadata(self) -> WorkflowMetadata | None:
+        return WorkflowMetadata(
+            workflow_type="gh",
+            ref_pattern=r"(?:^|(?<=\s))#gh(?::([a-zA-Z0-9_./-]+)|\(([^)]+)\))",
+            display_name="GitHub",
+            pre_allocated_env_prefix="SASE_GH",
+        )
 
     @hookimpl
     def ws_detect_workflow_type(self, project_file: str) -> str | None:
