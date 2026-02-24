@@ -31,6 +31,7 @@ class GitHubWorkspacePlugin:
             display_name="GitHub",
             pre_allocated_env_prefix="SASE_GH",
             vcs_family="git",
+            vcs_provider_name="github",
         )
 
     @hookimpl
