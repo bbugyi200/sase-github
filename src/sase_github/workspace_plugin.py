@@ -41,7 +41,7 @@ class GitHubWorkspacePlugin:
         ):
             return None
 
-        from sase.git_workspace import parse_bare_repo_dir
+        from sase.workspace_utils import parse_bare_repo_dir
 
         if parse_bare_repo_dir(project_file):
             return None  # bare-git plugin handles this
