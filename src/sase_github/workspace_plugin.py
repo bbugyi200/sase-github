@@ -30,6 +30,7 @@ class GitHubWorkspacePlugin:
             ref_pattern=r"(?:^|(?<=\s))#gh(?::([a-zA-Z0-9_./-]+)|\(([^)]+)\))",
             display_name="GitHub",
             pre_allocated_env_prefix="SASE_GH",
+            vcs_family="git",
         )
 
     @hookimpl
