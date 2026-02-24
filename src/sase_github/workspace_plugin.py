@@ -493,9 +493,9 @@ def _submit_via_pr_merge(
         if isinstance(console, RichConsole):
             console.print("[green]PR merged successfully[/green]")
 
-    from sase.git_submit import _finalize_submission
+    from sase.submission_utils import finalize_submission
 
-    return _finalize_submission(changespec, console)  # type: ignore[arg-type]
+    return finalize_submission(changespec.file_path, changespec.name, console)  # type: ignore[arg-type]
 
 
 def _prepare_mail_git(
