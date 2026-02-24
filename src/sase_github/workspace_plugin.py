@@ -6,6 +6,7 @@ PR-based submission.
 """
 
 import os
+import re
 import subprocess
 from pathlib import Path
 
@@ -85,6 +86,35 @@ class GitHubWorkspacePlugin:
             primary_workspace_dir=r.primary_workspace_dir,
             checkout_target=r.checkout_target,
         )
+
+    @hookimpl
+    def ws_extract_change_identifier(
+        self, cl_url: str
+    ) -> tuple[str, str] | None:
+        """Extract PR number from a GitHub PR URL."""
+        match = re.match(r"https?://github\.com/.+/pull/(\d+)", cl_url)
+        if match:
+            return (match.group(1), "git")
+        return None
+
+    @hookimpl
+    def ws_generate_submitted_check_script(
+        self, identifier: str, vcs_type: str
+    ) -> str | None:
+        """Generate script to check if a GitHub PR is merged."""
+        if vcs_type != "git":
+            return None
+        return (
+            f'state=$(gh pr view {identifier} --json state -q \'.state\' 2>/dev/null)\n'
+            f'[ "$state" = "MERGED" ]'
+        )
+
+    @hookimpl
+    def ws_supports_reviewer_comments(self, cl_url: str) -> bool | None:
+        """GitHub does not support reviewer comments via critique_comments."""
+        if re.match(r"https?://github\.com/", cl_url):
+            return False
+        return None
 
     @hookimpl
     def ws_submit(
