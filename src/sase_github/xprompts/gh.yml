@@ -13,7 +13,7 @@ input:
 steps:
   - name: setup
     python: |
-      from sase.scripts.gh_setup import main
+      from sase_github.scripts.gh_setup import main
       main(
           gh_ref={{ gh_ref | tojson }},
           n={{ n | tojson }},

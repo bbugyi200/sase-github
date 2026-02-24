@@ -19,7 +19,7 @@ steps:
   - name: create_changespec
     hidden: true
     python: |
-      from sase.scripts.pr_create_changespec import main
+      from sase_github.scripts.pr_create_changespec import main
       main(
           name={{ name | tojson }},
           prompt={{ _prompt | tojson }},

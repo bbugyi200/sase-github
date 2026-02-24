@@ -5,7 +5,7 @@ input:
 steps:
   - name: get_context
     python: |
-      from sase.scripts.new_pr_desc_get_context import main
+      from sase_github.scripts.new_pr_desc_get_context import main
       main(name={{ name | tojson }})
     output:
       error: line
