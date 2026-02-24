@@ -6,12 +6,37 @@ GitHub-specific methods (``mail`` with PR creation, ``get_cl_number``
 and ``get_change_url`` via ``gh`` CLI).
 """
 
+import subprocess
+
 from sase.vcs_provider._hookspec import hookimpl
 from sase.vcs_provider.plugins._git_common import GitCommon
 
 
 class GitHubPlugin(GitCommon):
     """Pluggy plugin for GitHub-hosted git repositories."""
+
+    @hookimpl
+    def vcs_classify_repo(self, git_dir: str) -> str | None:
+        """Claim repos with ``github.com`` in their origin URL."""
+        try:
+            result = subprocess.run(
+                ["git", "config", "--get", "remote.origin.url"],
+                cwd=git_dir,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=10,
+            )
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+            return None
+
+        if result.returncode != 0:
+            return None
+
+        url = result.stdout.strip()
+        if "github.com" in url:
+            return "github"
+        return None
 
     @hookimpl
     def vcs_get_change_url(self, cwd: str) -> tuple[bool, str | None]:
